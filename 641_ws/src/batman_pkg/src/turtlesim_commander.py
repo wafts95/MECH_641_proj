@@ -4,6 +4,7 @@ import rospy
 from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
 from math import pow, atan2, sqrt
+from std_srvs.srv import Empty
 
 
 class TurtleBot:
@@ -94,15 +95,60 @@ class TurtleBot:
 
 def main():
     rospy.init_node("turtlesim_batman_commander")
+    clear_srv = rospy.ServiceProxy("/clear", Empty())
     my_batman_turtle = TurtleBot()
     
-    b_move = input("\ndo you want to go somewhere? (y/n)\t")
-    while b_move == "y":
-        desired_pose = Pose()
-        desired_pose.x = float(input("\nenter desired x pose: "))
-        desired_pose.y = float(input("\nenter desired y pose: "))
-        my_batman_turtle.move2goal(desired_pose, 0.001)
-        b_move = input("\ndo you want to go somewhere else? (y/n)\t")
+    # b_move = input("\ndo you want to go somewhere? (y/n)\t")
+    # while b_move == "y":
+    #     desired_pose = Pose()
+    #     desired_pose.x = float(input("\nenter desired x pose: "))
+    #     desired_pose.y = float(input("\nenter desired y pose: "))
+    #     my_batman_turtle.move2goal(desired_pose, 0.001)
+    #     b_move = input("\ndo you want to go somewhere else? (y/n)\t")
+
+    x_factor = 11/20
+    y_factor = 11/40
+    # [wp_1, wp_2, wp_3, wp_4, wp_5] = [Pose() for i in range(5)]
+    
+    # #(10,0)
+    # wp_1.x = 10 * x_factor
+    # wp_1.y = 0 * y_factor
+
+    # #(3.5, 4)
+    # wp_2.x = 3.5 * x_factor
+    # wp_2.y = 4 * y_factor
+
+    # #(1,9)
+    # wp_3.x = 1 * x_factor
+    # wp_3.y = 9 * y_factor
+
+    # #(7,9)
+    # wp_4.x = 7 * x_factor
+    # wp_4.y = 9 * y_factor
+
+    # #(8,7.1)
+    # wp_5.x = 8 * x_factor
+    # wp_5.y = 7.1 * y_factor
+
+    waypoints = [(10,0), (10,0.5), (3.5, 4), (3.5, 4.05), (1,9), (1.005,9), (7,9), (7,8.95), (8,7.1), (9.2, 7), (9.2, 7.005), (9.5,8.75), (9.5,8.74)]
+    goals = []
+    print("len(waypoints", len(waypoints))
+
+    for idx, wp in enumerate(waypoints):
+        my_goal = Pose()
+        my_goal.x = wp[0] * x_factor
+        my_goal.y = wp[1] * y_factor
+        goals.append(my_goal)
+
+    my_batman_turtle.move2goal(goals[0], 0.001)
+    clear_srv.call()
+    goals.pop(0)
+    print("starting movement\n")
+    for idx, goal in enumerate(goals):
+        print("movement %s\n" % (idx+1))
+        my_batman_turtle.move2goal(goal, 0.001)
+    print("done")
+    
 
 
 if __name__ == "__main__":
