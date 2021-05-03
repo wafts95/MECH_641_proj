@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+641_ws/devel/
+
+641_ws/.catkin_tools/
+
+641_ws/src/batman_pkg/.vscode/
