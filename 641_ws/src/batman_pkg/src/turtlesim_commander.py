@@ -122,7 +122,7 @@ def main():
     goals = []
     my_ctrs = pleb()
     # print("type(my_ctrs)", type(my_ctrs))
-    waypoints = my_ctrs[1]
+    waypoints = my_ctrs[0]
     print("len(waypoints", len(waypoints))
     for idx, wp in enumerate(waypoints):
         my_goal = Pose()
