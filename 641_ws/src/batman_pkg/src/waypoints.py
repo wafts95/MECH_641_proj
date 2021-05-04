@@ -17,7 +17,7 @@ def pleb():
 
     img = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
-    contours, _= cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _= cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     cv2.drawContours(img, contours, -1, (0, 255, 0), 4)
 
     cv2.namedWindow('contours')
