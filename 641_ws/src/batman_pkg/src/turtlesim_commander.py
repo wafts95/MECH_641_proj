@@ -116,18 +116,19 @@ def main():
     #              (9.6, 7.9), (9.65, 7.9), (10.4, 7.9), (10.4, 7.91),
     #              (10.5, 8.75), (10.52,8.73), (10.8,7), (11,7), (12,7.1)]
 
-    x_factor = 11/768
-    y_factor = 11/410/2
-
     goals = []
-    my_ctrs = pleb()
+    my_ctrs, my_shape = pleb()
+    # x_factor = 11/768
+    # y_factor = 11/410/2
+    x_factor = 11/my_shape[1]
+    y_factor = 11/my_shape[0]/2
     # print("type(my_ctrs)", type(my_ctrs))
     waypoints = my_ctrs[0]
     print("len(waypoints", len(waypoints))
     for idx, wp in enumerate(waypoints):
         my_goal = Pose()
         my_goal.x = wp[0][0] * x_factor
-        my_goal.y = (410-wp[0][1]) * y_factor
+        my_goal.y = (my_shape[0]-wp[0][1]) * y_factor
         goals.append(my_goal)
 
     my_batman_turtle.move2goal(goals[0], 0.001)
@@ -136,7 +137,7 @@ def main():
     print("starting movement\n")
     for idx, goal in enumerate(goals):
         print("movement %s\n" % (idx+1))
-        my_batman_turtle.move2goal(goal, 0.001)
+        my_batman_turtle.move2goal(goal, 0.03)
     print("done")
     
 
