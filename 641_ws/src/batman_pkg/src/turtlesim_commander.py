@@ -5,6 +5,7 @@ from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
 from math import pow, atan2, sqrt
 from std_srvs.srv import Empty
+from waypoints import pleb
 
 
 class TurtleBot:
@@ -24,7 +25,7 @@ class TurtleBot:
                                                 Pose, self.update_pose)
 
         self.pose = Pose()
-        self.rate = rospy.Rate(100)
+        self.rate = rospy.Rate(1000)
 
     def update_pose(self, data):
         """Callback function which is called when a new message of type Pose is
@@ -38,7 +39,7 @@ class TurtleBot:
         return sqrt(pow((goal_pose.x - self.pose.x), 2) +
                     pow((goal_pose.y - self.pose.y), 2))
 
-    def linear_vel(self, goal_pose, constant=1.5):
+    def linear_vel(self, goal_pose, constant=1.5*10):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return constant * self.euclidean_distance(goal_pose)
 
@@ -46,7 +47,7 @@ class TurtleBot:
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x)
 
-    def angular_vel(self, goal_pose, constant=6):
+    def angular_vel(self, goal_pose, constant=80):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return constant * (self.steering_angle(goal_pose) - self.pose.theta)
 
@@ -106,38 +107,27 @@ def main():
     #     my_batman_turtle.move2goal(desired_pose, 0.001)
     #     b_move = input("\ndo you want to go somewhere else? (y/n)\t")
 
-    x_factor = 11/20
-    y_factor = 11/40
-    # [wp_1, wp_2, wp_3, wp_4, wp_5] = [Pose() for i in range(5)]
-    
-    # #(10,0)
-    # wp_1.x = 10 * x_factor
-    # wp_1.y = 0 * y_factor
+    # x_factor = 11/20
+    # y_factor = 11/40
 
-    # #(3.5, 4)
-    # wp_2.x = 3.5 * x_factor
-    # wp_2.y = 4 * y_factor
+    # waypoints = [(10,0), (10,0.5), (3.5, 4), (3.5, 4.05),
+    #              (1,9), (1.005,9), (7,9), (7,8.95), (8,7.1),
+    #              (9.2, 7), (9.2, 7.005), (9.5,8.75), (9.5,8.74),
+    #              (9.6, 7.9), (9.65, 7.9), (10.4, 7.9), (10.4, 7.91),
+    #              (10.5, 8.75), (10.52,8.73), (10.8,7), (11,7), (12,7.1)]
 
-    # #(1,9)
-    # wp_3.x = 1 * x_factor
-    # wp_3.y = 9 * y_factor
+    x_factor = 11/768
+    y_factor = 11/410/2
 
-    # #(7,9)
-    # wp_4.x = 7 * x_factor
-    # wp_4.y = 9 * y_factor
-
-    # #(8,7.1)
-    # wp_5.x = 8 * x_factor
-    # wp_5.y = 7.1 * y_factor
-
-    waypoints = [(10,0), (10,0.5), (3.5, 4), (3.5, 4.05), (1,9), (1.005,9), (7,9), (7,8.95), (8,7.1), (9.2, 7), (9.2, 7.005), (9.5,8.75), (9.5,8.74)]
     goals = []
+    my_ctrs = pleb()
+    # print("type(my_ctrs)", type(my_ctrs))
+    waypoints = my_ctrs[1]
     print("len(waypoints", len(waypoints))
-
     for idx, wp in enumerate(waypoints):
         my_goal = Pose()
-        my_goal.x = wp[0] * x_factor
-        my_goal.y = wp[1] * y_factor
+        my_goal.x = wp[0][0] * x_factor
+        my_goal.y = (410-wp[0][1]) * y_factor
         goals.append(my_goal)
 
     my_batman_turtle.move2goal(goals[0], 0.001)
