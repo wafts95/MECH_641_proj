@@ -10,11 +10,13 @@ min_threshold = 0.66 * mean
 max_threshold = 1.33 * mean
 edges = cv2.Canny(grey_img, min_threshold, max_threshold)
 
+kernel = np.ones((3,3),np.uint8)
+edges = cv2.dilate(edges, kernel, iterations = 1)
+
 img = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
 contours, _= cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-print(len(contours[0])) # or 1
-cv2.drawContours(img, contours, -1, (0, 255, 0), 1)
+cv2.drawContours(img, contours, -1, (0, 255, 0), 4)
 
 cv2.namedWindow('contours')
 cv2.moveWindow('contours', 40, 30)
