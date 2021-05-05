@@ -5,7 +5,10 @@ from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
 from math import pow, atan2, sqrt
 from std_srvs.srv import Empty
-from waypoints import pleb
+from waypoints import get_ctrs
+import glob, os
+from os.path import dirname, abspath
+pkg_path = dirname(dirname(abspath(__file__)))
 
 
 class TurtleBot:
@@ -98,37 +101,28 @@ def main():
     rospy.init_node("turtlesim_batman_commander")
     clear_srv = rospy.ServiceProxy("/clear", Empty())
     my_batman_turtle = TurtleBot()
-    
-    # b_move = input("\ndo you want to go somewhere? (y/n)\t")
-    # while b_move == "y":
-    #     desired_pose = Pose()
-    #     desired_pose.x = float(input("\nenter desired x pose: "))
-    #     desired_pose.y = float(input("\nenter desired y pose: "))
-    #     my_batman_turtle.move2goal(desired_pose, 0.001)
-    #     b_move = input("\ndo you want to go somewhere else? (y/n)\t")
+    media_path = os.path.join(pkg_path, "media")
 
-    # x_factor = 11/20
-    # y_factor = 11/40
+    print("Below are the available logos that can be drawn:\n")
+    for idx, file in enumerate(os.listdir(media_path)):
+        if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png"):
+            print("%i- %s" % (idx, file))
 
-    # waypoints = [(10,0), (10,0.5), (3.5, 4), (3.5, 4.05),
-    #              (1,9), (1.005,9), (7,9), (7,8.95), (8,7.1),
-    #              (9.2, 7), (9.2, 7.005), (9.5,8.75), (9.5,8.74),
-    #              (9.6, 7.9), (9.65, 7.9), (10.4, 7.9), (10.4, 7.91),
-    #              (10.5, 8.75), (10.52,8.73), (10.8,7), (11,7), (12,7.1)]
-
-    goals = []
-    my_ctrs, my_shape = pleb()
-    # x_factor = 11/768
-    # y_factor = 11/410/2
+    desired_logo_idx = int(input("\nSelect the number of the desired logo to draw using turtlesim: "))
+    desired_logo_path = os.path.join(media_path, os.listdir(media_path)[desired_logo_idx])
+    # print("desired_logo_path", desired_logo_path)
+    my_ctrs, my_shape = get_ctrs(desired_logo_path, False)
     x_factor = 11/my_shape[1]
     y_factor = 11/my_shape[0]/2
     # print("type(my_ctrs)", type(my_ctrs))
     waypoints = my_ctrs[0]
-    print("len(waypoints", len(waypoints))
+    print("number of waypoints from the contour: ", len(waypoints))
+
+    goals = []
     for idx, wp in enumerate(waypoints):
         my_goal = Pose()
         my_goal.x = wp[0][0] * x_factor
-        my_goal.y = (my_shape[0]-wp[0][1]) * y_factor
+        my_goal.y = (my_shape[0]-wp[0][1]) * y_factor + 3
         goals.append(my_goal)
 
     my_batman_turtle.move2goal(goals[0], 0.001)
