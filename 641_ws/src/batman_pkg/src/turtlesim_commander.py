@@ -112,8 +112,9 @@ def main():
     desired_logo_path = os.path.join(media_path, os.listdir(media_path)[desired_logo_idx])
     # print("desired_logo_path", desired_logo_path)
     my_ctrs, my_shape = get_ctrs(desired_logo_path, False)
-    x_factor = 11/my_shape[1]
-    y_factor = 11/my_shape[0]/2
+    aspect_ratio = my_shape[0]/my_shape[1]
+    x_factor = 11 / my_shape[1]
+    y_factor = 11 * aspect_ratio / my_shape[0] 
     # print("type(my_ctrs)", type(my_ctrs))
     waypoints = my_ctrs[0]
     print("number of waypoints from the contour: ", len(waypoints))
@@ -122,7 +123,7 @@ def main():
     for idx, wp in enumerate(waypoints):
         my_goal = Pose()
         my_goal.x = wp[0][0] * x_factor
-        my_goal.y = (my_shape[0]-wp[0][1]) * y_factor + 3
+        my_goal.y = (my_shape[0]-wp[0][1]) * y_factor
         goals.append(my_goal)
 
     my_batman_turtle.move2goal(goals[0], 0.001)
