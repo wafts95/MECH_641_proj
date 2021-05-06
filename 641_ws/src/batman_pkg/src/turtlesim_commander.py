@@ -46,7 +46,7 @@ def main():
     print("starting movement\n")
     for idx, goal in enumerate(goals):
         print("movement %s\n" % (idx+1))
-        my_batman_turtle.move2goal(goal, 0.03)
+        my_batman_turtle.move2goal(goal, 0.05)
     print("done")
     
 

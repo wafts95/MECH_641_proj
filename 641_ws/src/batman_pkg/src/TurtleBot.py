@@ -21,7 +21,7 @@ class TurtleBot:
                                                 Pose, self.update_pose)
 
         self.pose = Pose()
-        self.rate = rospy.Rate(1000)
+        self.rate = rospy.Rate(10000)
 
     def update_pose(self, data):
         """Callback function which is called when a new message of type Pose is
@@ -35,7 +35,7 @@ class TurtleBot:
         return sqrt(pow((goal_pose.x - self.pose.x), 2) +
                     pow((goal_pose.y - self.pose.y), 2))
 
-    def linear_vel(self, goal_pose, constant=1.5*10):
+    def linear_vel(self, goal_pose, constant=1.5*30):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return constant * self.euclidean_distance(goal_pose)
 
@@ -43,7 +43,7 @@ class TurtleBot:
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x)
 
-    def angular_vel(self, goal_pose, constant=80):
+    def angular_vel(self, goal_pose, constant=70):
         """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
         return constant * (self.steering_angle(goal_pose) - self.pose.theta)
 
