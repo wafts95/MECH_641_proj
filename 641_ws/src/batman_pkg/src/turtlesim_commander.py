@@ -3,7 +3,6 @@
 import rospy
 from TurtleBot import TurtleBot
 from turtlesim.msg import Pose
-from std_srvs.srv import Empty
 from waypoints import get_ctrs
 import glob, os
 from os.path import dirname, abspath
@@ -12,7 +11,6 @@ pkg_path = dirname(dirname(abspath(__file__)))
 
 def main():
     rospy.init_node("turtlesim_batman_commander")
-    clear_srv = rospy.ServiceProxy("/clear", Empty())
     my_batman_turtle = TurtleBot()
     media_path = os.path.join(pkg_path, "media")
 
@@ -39,16 +37,7 @@ def main():
         my_goal.y = (my_shape[0]-wp[0][1]) * y_factor
         goals.append(my_goal)
 
-    my_batman_turtle.move2goal(goals[0], 0.001)
-
-    clear_srv.call()
-    goals.pop(0)
-    print("starting movement\n")
-    for idx, goal in enumerate(goals):
-        print("movement %s\n" % (idx+1))
-        my_batman_turtle.move2goal(goal, 0.05)
-    print("done")
-    
+    my_batman_turtle.move_waypoints(goals, 0.05)    
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import rospy
 from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose
 from math import pow, atan2, sqrt
-
+from std_srvs.srv import Empty
 
 class TurtleBot:
 
@@ -19,6 +19,8 @@ class TurtleBot:
         # when a message of type Pose is received.
         self.pose_subscriber = rospy.Subscriber('/turtle1/pose',
                                                 Pose, self.update_pose)
+
+        self.clear_srv = rospy.ServiceProxy("/clear", Empty())
 
         self.pose = Pose()
         self.rate = rospy.Rate(10000)
@@ -86,6 +88,18 @@ class TurtleBot:
 
         return
 
-        # If we press control + C, the node will stop.
-        #rospy.spin()
+    def move_waypoints(self, waypoints, distance_tolerance):
+
+        goals = waypoints
+        print("starting movement\n")
+        print("movement 1\n")
+        self.move2goal(goals[0], distance_tolerance)
+        self.clear_srv.call()
+        goals.pop(0)
+
+        for idx, goal in enumerate(goals):
+            print("movement %s\n" % (idx+2))
+            self.move2goal(goal, distance_tolerance)
+
+        print("movement done")
 
