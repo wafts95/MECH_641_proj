@@ -1,0 +1,3 @@
+<launch>
+  <node name="turtlesim_batman_commander" pkg="batman_pkg" type="urx_batman_commander.py" output="screen"/>
+</launch>
